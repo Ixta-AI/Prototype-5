@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class Target : MonoBehaviour
 {
+    public int pointValue;
+    public ParticleSystem explosionParticle;
+
     private Rigidbody targetRb;
+    private GameManager gameManager;// Reference Var
+
     private float minSpeed = 12.0f;
     private float maxSpeed = 16.0f;
     private float maxTorque = 10;
@@ -14,6 +19,8 @@ public class Target : MonoBehaviour
     void Start()
     {
         targetRb = GetComponent<Rigidbody>();//Grab rb of object
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();//Get Game Manager & GMScript component
+
         targetRb.AddForce(RandomForce(), ForceMode.Impulse);//Add upwards force
         targetRb.AddTorque(RandomTorque(), RandomTorque(), RandomTorque(), ForceMode.Impulse);//Add rotation to object
         //Spawn object in random range
@@ -45,10 +52,17 @@ public class Target : MonoBehaviour
     private void OnMouseDown()// Unity provided code (when mouse click on object)
     {
         Destroy(gameObject);
+        Instantiate(explosionParticle,transform.position, explosionParticle.transform.rotation);// Spawn particle on object location with matching rotation
+        gameManager.UpdateScore(pointValue);// Update score on mouse click 
     }
 
     private void OnTriggerEnter(Collider other)// Unity provided code (when object hits other trigger)
     {
         Destroy(gameObject);
+        if (!gameObject.CompareTag("Bad"))
+        {
+            gameManager.GameOver();
+        }
+        
     }
 }
