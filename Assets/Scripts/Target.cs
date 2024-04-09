@@ -51,9 +51,12 @@ public class Target : MonoBehaviour
 
     private void OnMouseDown()// Unity provided code (when mouse click on object)
     {
-        Destroy(gameObject);
-        Instantiate(explosionParticle,transform.position, explosionParticle.transform.rotation);// Spawn particle on object location with matching rotation
-        gameManager.UpdateScore(pointValue);// Update score on mouse click 
+        if (gameManager.isGameActive)// Will run code so long as game is active
+        {
+            Destroy(gameObject);
+            Instantiate(explosionParticle, transform.position, explosionParticle.transform.rotation);// Spawn particle on object location with matching rotation
+            gameManager.UpdateScore(pointValue);// Update score on mouse click
+        }
     }
 
     private void OnTriggerEnter(Collider other)// Unity provided code (when object hits other trigger)
